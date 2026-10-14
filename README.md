@@ -1,0 +1,2 @@
+# memory.land
+pdpr purposes 
