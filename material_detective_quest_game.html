@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Detective Quest - Year 2 English Game</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif']
+                    },
+                    colors: {
+                        cotton: '#4ADE80',
+                        wool: '#38BDF8',
+                        leather: '#FB923C',
+                        detective: '#818CF8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .pulse-btn {
+            animation: pulse-glow 1.5s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); }
+            50% { box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex items-center justify-center p-2 sm:p-4">
+
+    <div id="game-app" class="w-full max-w-md bg-slate-50 min-h-[92vh] sm:min-h-[850px] rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border-4 border-indigo-400/30">
+        
+        <!-- Header Bar -->
+        <header class="bg-indigo-600 text-white p-4 shadow-lg flex items-center justify-between sticky top-0 z-20">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🕵️‍♂️</span>
+                <div>
+                    <h1 class="text-lg font-bold leading-none font-heading">Material Detective</h1>
+                    <p class="text-xs text-indigo-200">English Year 2 • Materials</p>
+                </div>
+            </div>
+            <!-- Score Counter -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-800/80 px-3 py-1 rounded-full text-amber-300 font-bold text-sm flex items-center gap-1 border border-indigo-400/40">
+                    <i class="fas fa-star text-amber-400"></i>
+                    <span id="header-score">0</span> pts
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col p-4 overflow-y-auto relative">
+
+            <!-- SCREEN 0: WELCOME & PLAYER SETUP -->
+            <section id="screen-welcome" class="flex-1 flex flex-col items-center justify-center text-center space-y-6 my-auto">
+                <div class="relative">
+                    <div class="w-32 h-32 bg-indigo-100 rounded-full flex items-center justify-center text-6xl shadow-inner border-4 border-indigo-300 bounce-gentle">
+                        🧸
+                    </div>
+                    <span class="absolute -bottom-2 -right-2 bg-amber-400 text-xs font-bold px-2 py-1 rounded-full text-slate-900 shadow">Teddy Detective</span>
+                </div>
+
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-indigo-900 font-heading">Material Detective Quest!</h2>
+                    <p class="text-sm text-slate-600 px-2">Teddy lost his clothes! Help Teddy collect clothes made of <strong class="text-emerald-600">Cotton</strong>, <strong class="text-sky-600">Wool</strong>, and <strong class="text-orange-600">Leather</strong>.</p>
+                </div>
+
+                <!-- Player Input Form -->
+                <div class="w-full bg-indigo-50 p-4 rounded-2xl border border-indigo-100 space-y-3">
+                    <label class="block text-xs font-bold text-indigo-800 uppercase tracking-wider text-left">Young Detective Name:</label>
+                    <input type="text" id="player-name-input" placeholder="Enter your name..." class="w-full px-4 py-3 rounded-xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none text-center font-bold text-indigo-900 bg-white">
+                </div>
+
+                <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-lg rounded-2xl shadow-lg transition-transform active:scale-95 pulse-btn flex items-center justify-center gap-2">
+                    <i class="fas fa-play"></i> START DETECTIVE MISSION
+                </button>
+            </section>
+
+            <section id="screen-level1" class="hidden flex-1 flex flex-col justify-between space-y-4">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🌿</span>
+                        <div>
+                            <h3 class="font-bold text-emerald-800 font-heading">Level 1: Cotton Garden</h3>
+                            <p class="text-xs text-emerald-600">Cotton comes from plants. It is soft and light!</p>
+                        </div>
+                    </div>
+                    <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded-lg">100 Pts</span>
+                </div>
+
+                <!-- Speech Bubble Audio Prompt -->
+                <div class="bg-white p-4 rounded-2xl shadow-md border border-slate-100 flex items-start gap-3">
+                    <div class="text-3xl">🧸</div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-indigo-600">Detective Teddy says:</span>
+                            <button onclick="speakText('Find all items made of Cotton! Cotton is soft and light.')" class="text-xs text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1 px-2 rounded-full flex items-center gap-1">
+                                <i class="fas fa-volume-high"></i> Listen Audio
+                            </button>
+                        </div>
+                        <p class="text-sm text-slate-700 mt-1 font-medium">"Find all items made of <span class="text-emerald-600 font-bold">COTTON</span>! Tap on the correct cotton items."</p>
+                    </div>
+                </div>
+
+                <!-- Grid of Interactive Items -->
+                <div class="grid grid-cols-2 gap-3 my-2" id="lvl1-items-grid"></div>
+
+                <div class="bg-indigo-50 p-3 rounded-xl text-center border border-indigo-100">
+                    <p class="text-xs text-indigo-800 font-semibold" id="lvl1-progress-text">Collect 3 Cotton items: 0/3</p>
+                </div>
+
+                <button id="lvl1-next-btn" onclick="goToLevel(2)" class="hidden w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-md transition text-center">
+                    Next: Level 2 (Woolly Mountain) <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+            </section>
+
+            <section id="screen-level2" class="hidden flex-1 flex flex-col justify-between space-y-4">
+                <div class="bg-sky-50 border border-sky-200 rounded-2xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🐑</span>
+                        <div>
+                            <h3 class="font-bold text-sky-800 font-heading">Level 2: Woolly Mountain</h3>
+                            <p class="text-xs text-sky-600">Wool comes from sheep. It keeps you warm!</p>
+                        </div>
+                    </div>
+                    <span class="bg-sky-200 text-sky-800 text-xs font-bold px-2 py-1 rounded-lg">100 Pts</span>
+                </div>
+
+                <!-- Riddle Box -->
+                <div class="bg-white p-4 rounded-2xl shadow-md border border-sky-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-sky-600 uppercase tracking-wider">Wool Riddle Challenge</span>
+                        <button onclick="speakText('I come from sheep. I keep you warm when it is cold. What am I?')" class="text-xs text-sky-600 hover:text-sky-800 bg-sky-50 p-1 px-2 rounded-full">
+                            <i class="fas fa-volume-high"></i> Read Riddle
+                        </button>
+                    </div>
+                    <p class="text-slate-800 text-base font-semibold italic text-center bg-sky-50/50 p-3 rounded-xl border border-sky-100">
+                        "I come from sheep. I keep you warm when it is cold. What am I?" 🐑
+                    </p>
+                </div>
+
+                <div class="space-y-3" id="lvl2-options"></div>
+
+                <div id="lvl2-feedback" class="hidden p-3 rounded-xl text-center text-xs font-bold"></div>
+
+                <button id="lvl2-next-btn" onclick="goToLevel(3)" class="hidden w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow-md transition text-center">
+                    Next: Level 3 (Leather Cave) <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+            </section>
+
+            <section id="screen-level3" class="hidden flex-1 flex flex-col justify-between space-y-4">
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🐊</span>
+                        <div>
+                            <h3 class="font-bold text-amber-800 font-heading">Level 3: Leather Cave</h3>
+                            <p class="text-xs text-amber-600">Leather comes from animal skin. It is strong!</p>
+                        </div>
+                    </div>
+                    <span class="bg-amber-200 text-amber-800 text-xs font-bold px-2 py-1 rounded-lg">100 Pts</span>
+                </div>
+
+                <!-- Spot the Fake Challenge -->
+                <div class="bg-white p-4 rounded-2xl shadow-md border border-amber-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-amber-700">Spot the Odd One Out! 🕵️‍♂️</span>
+                        <span class="text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full">Speed Challenge</span>
+                    </div>
+                    <p class="text-sm text-slate-700 font-medium">Which item below is <strong class="text-red-600">NOT</strong> made of <strong class="text-amber-700">Leather</strong>?</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3" id="lvl3-options"></div>
+
+                <div id="lvl3-feedback" class="hidden p-3 rounded-xl text-center text-xs font-bold"></div>
+
+                <button id="lvl3-next-btn" onclick="goToLevel(4)" class="hidden w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition text-center">
+                    Next: Level 4 (Boss Sorting) <i class="fas fa-crown ml-1"></i>
+                </button>
+            </section>
+
+            <section id="screen-level4" class="hidden flex-1 flex flex-col justify-between space-y-3">
+                <div class="bg-purple-50 border border-purple-200 rounded-2xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🏆</span>
+                        <div>
+                            <h3 class="font-bold text-purple-900 font-heading">Boss Level: Material Sorting!</h3>
+                            <p class="text-xs text-purple-700">Sort all materials correctly! (200 Points)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Sorting Card -->
+                <div id="boss-card-container" class="bg-white p-4 rounded-2xl shadow-lg border-2 border-purple-200 text-center flex flex-col items-center justify-center min-h-[140px]">
+                    <div id="boss-item-icon" class="text-5xl mb-1">👕</div>
+                    <h4 id="boss-item-title" class="text-lg font-bold text-slate-800">T-Shirt</h4>
+                    <button onclick="speakCurrentBossItem()" class="text-xs text-purple-600 hover:underline mt-1 flex items-center gap-1">
+                        <i class="fas fa-volume-high"></i> Say Item Name
+                    </button>
+                </div>
+
+                <p class="text-xs font-bold text-center text-slate-500 uppercase tracking-wider">Choose the correct Material Bin:</p>
+
+                <!-- Target Bins -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="sortBossItem('cotton')" class="p-3 bg-emerald-100 hover:bg-emerald-200 border-2 border-emerald-400 rounded-xl text-center transition active:scale-95 flex flex-col items-center">
+                        <span class="text-2xl">🌿</span>
+                        <span class="text-xs font-bold text-emerald-800 mt-1">Cotton</span>
+                    </button>
+                    <button onclick="sortBossItem('wool')" class="p-3 bg-sky-100 hover:bg-sky-200 border-2 border-sky-400 rounded-xl text-center transition active:scale-95 flex flex-col items-center">
+                        <span class="text-2xl">🐑</span>
+                        <span class="text-xs font-bold text-sky-800 mt-1">Wool</span>
+                    </button>
+                    <button onclick="sortBossItem('leather')" class="p-3 bg-amber-100 hover:bg-amber-200 border-2 border-amber-400 rounded-xl text-center transition active:scale-95 flex flex-col items-center">
+                        <span class="text-2xl">🐊</span>
+                        <span class="text-xs font-bold text-amber-800 mt-1">Leather</span>
+                    </button>
+                </div>
+
+                <div class="bg-purple-100/70 p-2 rounded-xl text-center border border-purple-200">
+                    <span id="boss-progress" class="text-xs font-bold text-purple-900">Sorting Progress: 0 / 6</span>
+                </div>
+            </section>
+
+            <section id="screen-results" class="hidden flex-1 flex flex-col items-center justify-between space-y-4 text-center">
+                <div class="space-y-1">
+                    <div class="text-5xl">🏆</div>
+                    <h2 class="text-2xl font-bold text-indigo-900 font-heading">Congratulations, Detective!</h2>
+                    <p class="text-xs text-slate-600">You have successfully completed Teddy's Material Quest!</p>
+                </div>
+
+                <!-- Badges Collection -->
+                <div class="w-full bg-slate-100 p-3 rounded-2xl border border-slate-200">
+                    <p class="text-xs font-bold text-slate-500 uppercase mb-2">Your Badges Earned:</p>
+                    <div class="flex justify-around items-center">
+                        <div class="flex flex-col items-center">
+                            <span class="text-2xl bg-emerald-100 p-2 rounded-full shadow-sm">🌿</span>
+                            <span class="text-[10px] font-bold text-emerald-800 mt-1">Cotton</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-2xl bg-sky-100 p-2 rounded-full shadow-sm">🐑</span>
+                            <span class="text-[10px] font-bold text-sky-800 mt-1">Wool</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-2xl bg-amber-100 p-2 rounded-full shadow-sm">🐊</span>
+                            <span class="text-[10px] font-bold text-amber-800 mt-1">Leather</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-2xl bg-purple-100 p-2 rounded-full shadow-sm">👑</span>
+                            <span class="text-[10px] font-bold text-purple-800 mt-1">Master</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score Box -->
+                <div class="w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-4 rounded-2xl shadow-lg flex items-center justify-between">
+                    <div class="text-left">
+                        <p class="text-xs text-indigo-200 font-bold uppercase">Total Score</p>
+                        <h3 id="final-score-text" class="text-3xl font-bold font-heading">500 / 500</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full shadow">Rank: Master Detective</span>
+                    </div>
+                </div>
+
+                <!-- Canvas for Certificate Download -->
+                <div class="w-full">
+                    <p class="text-xs font-bold text-slate-600 mb-1 text-left">Your Digital Certificate Preview:</p>
+                    <canvas id="cert-canvas" class="w-full h-auto border-2 border-indigo-200 rounded-xl shadow-md bg-white"></canvas>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="w-full space-y-2">
+                    <button onclick="shareToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-2 text-sm">
+                        <i class="fab fa-whatsapp text-lg"></i> Send Score to WhatsApp
+                    </button>
+                    <button onclick="downloadCertificate()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-download"></i> Download Digital Certificate
+                    </button>
+                    <button onclick="restartGame()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs">
+                        <i class="fas fa-rotate-right"></i> Play Again
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Dynamic Game Modal Popup -->
+        <div id="game-modal" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-xs rounded-2xl p-5 text-center space-y-3 shadow-2xl border-2 border-indigo-100">
+                <div id="modal-icon" class="text-4xl">🎉</div>
+                <h4 id="modal-title" class="text-lg font-bold text-slate-800 font-heading">Modal Title</h4>
+                <p id="modal-msg" class="text-xs text-slate-600 leading-relaxed">Message text...</p>
+                <button onclick="closeModal()" class="w-full py-2 bg-indigo-600 text-white font-bold text-xs rounded-xl shadow">
+                    Got it!
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let playerName = "Young Detective";
+        let score = 0;
+        let currentLevel = 0;
+
+        /* WEB AUDIO SYNTHESIZER */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function playSound(type) {
+            try {
+                if (!audioCtx) audioCtx = new AudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15); // E5
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(160, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'win') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(554.37, audioCtx.currentTime + 0.15);
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.5);
+                }
+            } catch (e) {
+                console.log("Audio not supported or waiting for user gesture");
+            }
+        }
+
+        /* TEXT TO SPEECH (English TTS) */
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function updateScore(points) {
+            score += points;
+            document.getElementById('header-score').innerText = score;
+        }
+
+        function showModal(title, msg, icon = "💡") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('game-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+        }
+
+        function startGame() {
+            const input = document.getElementById('player-name-input').value.trim();
+            if (input !== "") playerName = input;
+            
+            score = 0;
+            updateScore(0);
+            
+            showModal("Mission Started!", `Welcome, Detective ${playerName}! Help Teddy collect missing items by solving challenges in each area.`, "🕵️‍♂️");
+            goToLevel(1);
+        }
+
+        function hideAllScreens() {
+            ['welcome', 'level1', 'level2', 'level3', 'level4', 'results'].forEach(s => {
+                document.getElementById(`screen-${s}`).classList.add('hidden');
+            });
+        }
+
+        function goToLevel(lvl) {
+            hideAllScreens();
+            currentLevel = lvl;
+
+            if (lvl === 1) {
+                document.getElementById('screen-level1').classList.remove('hidden');
+                initLevel1();
+            } else if (lvl === 2) {
+                document.getElementById('screen-level2').classList.remove('hidden');
+                initLevel2();
+            } else if (lvl === 3) {
+                document.getElementById('screen-level3').classList.remove('hidden');
+                initLevel3();
+            } else if (lvl === 4) {
+                document.getElementById('screen-level4').classList.remove('hidden');
+                initLevel4();
+            } else if (lvl === 5) {
+                document.getElementById('screen-results').classList.remove('hidden');
+                initResults();
+            }
+        }
+
+        const lvl1Items = [
+            { id: 1, name: "Cotton T-Shirt", material: "cotton", icon: "👕" },
+            { id: 2, name: "Cotton Socks", material: "cotton", icon: "🧦" },
+            { id: 3, name: "Leather Shoes", material: "leather", icon: "👞" },
+            { id: 4, name: "Cotton Towel", material: "cotton", icon: "🧺" }
+        ];
+        let lvl1Found = 0;
+
+        function initLevel1() {
+            lvl1Found = 0;
+            const grid = document.getElementById('lvl1-items-grid');
+            grid.innerHTML = "";
+            document.getElementById('lvl1-next-btn').classList.add('hidden');
+            document.getElementById('lvl1-progress-text').innerText = "Collect 3 Cotton items: 0/3";
+
+            lvl1Items.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `lvl1-card-${item.id}`;
+                card.className = "bg-white border-2 border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:border-emerald-400 active:scale-95 transition shadow-sm";
+                card.onclick = () => selectLvl1Item(item);
+                card.innerHTML = `
+                    <span class="text-4xl mb-1">${item.icon}</span>
+                    <span class="text-xs font-bold text-slate-800">${item.name}</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectLvl1Item(item) {
+            const card = document.getElementById(`lvl1-card-${item.id}`);
+            if (card.dataset.selected === "true") return;
+
+            speakText(item.name);
+
+            if (item.material === "cotton") {
+                card.dataset.selected = "true";
+                card.className = "bg-emerald-100 border-2 border-emerald-500 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-md relative";
+                card.innerHTML += `<span class="absolute top-1 right-1 text-emerald-600 text-xs font-bold"><i class="fas fa-check-circle"></i></span>`;
+                playSound('correct');
+                lvl1Found++;
+                updateScore(33);
+
+                document.getElementById('lvl1-progress-text').innerText = `Collect 3 Cotton items: ${lvl1Found}/3`;
+
+                if (lvl1Found >= 3) {
+                    playSound('win');
+                    document.getElementById('lvl1-next-btn').classList.remove('hidden');
+                    showModal("Great Job!", "You found all 3 Cotton items! Cotton Explorer Badge unlocked!", "🌿");
+                }
+            } else {
+                playSound('wrong');
+                showModal("Oops!", `${item.name} is NOT made of Cotton. Try finding soft plant items!`, "❌");
+            }
+        }
+
+        const lvl2Questions = [
+            { text: "A) Cotton T-Shirt", isWool: false },
+            { text: "B) Wool Sweater 🧥", isWool: true },
+            { text: "C) Leather Belt 🔲", isWool: false }
+        ];
+
+        function initLevel2() {
+            const container = document.getElementById('lvl2-options');
+            container.innerHTML = "";
+            document.getElementById('lvl2-next-btn').classList.add('hidden');
+            document.getElementById('lvl2-feedback').classList.add('hidden');
+
+            lvl2Questions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 bg-white hover:bg-sky-50 border-2 border-sky-200 hover:border-sky-400 rounded-2xl font-bold text-slate-800 text-left transition flex items-center justify-between shadow-sm active:scale-95";
+                btn.innerText = opt.text;
+                btn.onclick = () => answerLvl2(opt, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function answerLvl2(option, element) {
+            speakText(option.text);
+            const feedback = document.getElementById('lvl2-feedback');
+            feedback.classList.remove('hidden');
+
+            if (option.isWool) {
+                element.className = "w-full p-4 bg-sky-500 text-white border-2 border-sky-600 rounded-2xl font-bold text-left shadow-md";
+                feedback.className = "p-3 rounded-xl text-center text-xs font-bold bg-sky-100 text-sky-900 border border-sky-300";
+                feedback.innerText = "Correct! Wool Sweater comes from sheep and keeps you warm in cold weather.";
+                playSound('correct');
+                playSound('win');
+                updateScore(100);
+                document.getElementById('lvl2-next-btn').classList.remove('hidden');
+            } else {
+                element.className = "w-full p-4 bg-red-100 text-red-800 border-2 border-red-300 rounded-2xl font-bold text-left opacity-80";
+                feedback.className = "p-3 rounded-xl text-center text-xs font-bold bg-red-100 text-red-900 border border-red-300";
+                feedback.innerText = "Not quite! This item is not made from sheep's wool. Try again!";
+                playSound('wrong');
+            }
+        }
+
+        const lvl3Choices = [
+            { text: "1. Leather Shoes 👞", isFake: false },
+            { text: "2. Cotton Sock 🧦", isFake: true },
+            { text: "3. Leather Jacket 🧥", isFake: false }
+        ];
+
+        function initLevel3() {
+            const container = document.getElementById('lvl3-options');
+            container.innerHTML = "";
+            document.getElementById('lvl3-next-btn').classList.add('hidden');
+            document.getElementById('lvl3-feedback').classList.add('hidden');
+
+            lvl3Choices.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 bg-white hover:bg-amber-50 border-2 border-amber-200 hover:border-amber-400 rounded-2xl font-bold text-slate-800 text-left transition flex items-center justify-between shadow-sm active:scale-95";
+                btn.innerText = opt.text;
+                btn.onclick = () => answerLvl3(opt, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function answerLvl3(option, element) {
+            speakText(option.text);
+            const feedback = document.getElementById('lvl3-feedback');
+            feedback.classList.remove('hidden');
+
+            if (option.isFake) {
+                element.className = "w-full p-4 bg-amber-500 text-white border-2 border-amber-600 rounded-2xl font-bold text-left shadow-md";
+                feedback.className = "p-3 rounded-xl text-center text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300";
+                feedback.innerText = "Spot on! Cotton Sock is made of soft Cotton, NOT strong Leather!";
+                playSound('correct');
+                playSound('win');
+                updateScore(100);
+                document.getElementById('lvl3-next-btn').classList.remove('hidden');
+            } else {
+                element.className = "w-full p-4 bg-red-100 text-red-800 border-2 border-red-300 rounded-2xl font-bold text-left opacity-80";
+                feedback.className = "p-3 rounded-xl text-center text-xs font-bold bg-red-100 text-red-900 border border-red-300";
+                feedback.innerText = "That is a real Leather item! Look for the item that is NOT Leather.";
+                playSound('wrong');
+            }
+        }
+
+        const bossItems = [
+            { name: "T-Shirt", type: "cotton", icon: "👕" },
+            { name: "Warm Sweater", type: "wool", icon: "🧥" },
+            { name: "Leather Belt", type: "leather", icon: "🔲" },
+            { name: "Cotton Socks", type: "cotton", icon: "🧦" },
+            { name: "Wool Scarf", type: "wool", icon: "🧣" },
+            { name: "Leather Shoes", type: "leather", icon: "👞" }
+        ];
+        let bossIndex = 0;
+
+        function initLevel4() {
+            bossIndex = 0;
+            renderBossItem();
+        }
+
+        function renderBossItem() {
+            if (bossIndex >= bossItems.length) {
+                playSound('win');
+                showModal("Boss Defeated!", "Outstanding work! You sorted all the materials perfectly!", "🏆");
+                setTimeout(() => goToLevel(5), 1000);
+                return;
+            }
+
+            const current = bossItems[bossIndex];
+            document.getElementById('boss-item-icon').innerText = current.icon;
+            document.getElementById('boss-item-title').innerText = current.name;
+            document.getElementById('boss-progress').innerText = `Sorting Progress: ${bossIndex} / ${bossItems.length}`;
+            speakText(current.name);
+        }
+
+        function speakCurrentBossItem() {
+            if (bossItems[bossIndex]) {
+                speakText(bossItems[bossIndex].name);
+            }
+        }
+
+        function sortBossItem(selectedType) {
+            const current = bossItems[bossIndex];
+
+            if (selectedType === current.type) {
+                playSound('correct');
+                updateScore(33);
+                bossIndex++;
+                renderBossItem();
+            } else {
+                playSound('wrong');
+                showModal("Oops!", `${current.name} is NOT made of ${selectedType.toUpperCase()}. Think about its material!`, "❌");
+            }
+        }
+
+        function initResults() {
+            playSound('win');
+            document.getElementById('final-score-text').innerText = `${score} / 500 Pts`;
+
+            const canvas = document.getElementById('cert-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 600;
+            canvas.height = 400;
+
+            // Background
+            ctx.fillStyle = "#F8FAFC";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Outer Border
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = "#4F46E5";
+            ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
+
+            // Inner Accent Border
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#F59E0B";
+            ctx.strokeRect(22, 22, canvas.width - 44, canvas.height - 44);
+
+            // Certificate Header
+            ctx.fillStyle = "#312E81";
+            ctx.font = "bold 26px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("MATERIAL DETECTIVE CERTIFICATE", canvas.width / 2, 70);
+
+            ctx.fillStyle = "#6366F1";
+            ctx.font = "15px sans-serif";
+            ctx.fillText("Year 2 English • Materials Learning Quest", canvas.width / 2, 95);
+
+            // Recipient
+            ctx.fillStyle = "#475569";
+            ctx.font = "14px sans-serif";
+            ctx.fillText("This certificate is proudly awarded to:", canvas.width / 2, 140);
+
+            ctx.fillStyle = "#1E1B4B";
+            ctx.font = "bold 32px sans-serif";
+            ctx.fillText(playerName, canvas.width / 2, 185);
+
+            // Achievements Text
+            ctx.fillStyle = "#334155";
+            ctx.font = "14px sans-serif";
+            ctx.fillText("For mastering Cotton, Wool, & Leather in English", canvas.width / 2, 225);
+            ctx.fillText(`Total Score Achieved: ${score} Points`, canvas.width / 2, 250);
+
+            // Badges Graphic Icons
+            ctx.font = "24px sans-serif";
+            ctx.fillText("🌿   🐑   🐊   🏆", canvas.width / 2, 295);
+
+            // Rank Stamp
+            ctx.fillStyle = "#059669";
+            ctx.font = "bold 14px sans-serif";
+            ctx.fillText("Rank: MASTER MATERIAL DETECTIVE", canvas.width / 2, 340);
+
+            ctx.fillStyle = "#94A3B8";
+            ctx.font = "11px sans-serif";
+            ctx.fillText("Digitally Verified • SK Material Quest Learning System", canvas.width / 2, 365);
+        }
+
+        function downloadCertificate() {
+            const canvas = document.getElementById('cert-canvas');
+            const link = document.createElement('a');
+            link.download = `Material_Detective_Certificate_${playerName.replace(/\s+/g, '_')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function shareToWhatsApp() {
+            const message = `🕵️‍♂️ *MATERIAL DETECTIVE QUEST (English Year 2)*%0A%0A` +
+                `👤 *Student Name:* ${playerName}%0A` +
+                `⭐ *Total Score:* ${score} / 500 Pts%0A` +
+                `🏅 *Badges Earned:* Cotton 🌿, Wool 🐑, Leather 🐊, Master 🏆%0A%0A` +
+                `I have completed the Materials learning quest! 🎉`;
+            
+            const url = `https://api.whatsapp.com/send?text=${message}`;
+            window.open(url, '_blank');
+        }
+
+        function restartGame() {
+            score = 0;
+            updateScore(0);
+            goToLevel(0);
+        }
+    </script>
+</body>
+</html>
